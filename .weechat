@@ -1,0 +1,69 @@
+/script install buffers.pl colorize_nicks.py urlbuf.py screen_away.py shell.py
+
+/set buffers.look.hide_merged_buffers server
+/set irc.look.display_away off
+
+/set weechat.look.buffer_time_format "${color:green}%F${color:white} / ${color:green}%H${color:white}:${color:green}%M${color:white}:${color:green}%S"
+/set weechat.bar.status.items "[time],[buffer_count],[buffer_plugin],buffer_number+:+buffer_name+(buffer_modes)+{buffer_nicklist_count}+buffer_filter,scroll,[lag],[hotlist],completion"
+
+/set weechat.look.prefix_align_max 15
+/set weechat.look.eat_newline_glitch on
+
+/set irc.look.smart_filter on
+/filter add joinquit * irc_join,irc_part,irc_quit *
+
+/set weechat.bar.buffers.position top
+/set buffers.color.current_bg red
+/set buffers.color.current_fg white
+/set buffers.color.default_bg white
+/set buffers.color.default_fg black
+/set buffers.color.hotlist_highlight_bg white
+/set buffers.color.hotlist_highlight_fg red
+/set buffers.color.hotlist_low_bg white
+/set buffers.color.hotlist_low_fg black
+/set buffers.color.hotlist_message_bg white
+/set buffers.color.hotlist_message_fg black
+/set buffers.color.hotlist_private_bg white
+/set buffers.color.hotlist_private_fg black
+/set buffers.color.none_channel_bg white
+/set buffers.color.none_channel_fg black
+/set buffers.color.number black
+/set buffers.color.number_char black
+/set buffers.color.prefix_bufname blue
+/set buffers.color.queries_default_bg white
+/set buffers.color.queries_default_fg black
+/set buffers.color.queries_highlight_bg white
+/set buffers.color.queries_highlight_fg red
+/set buffers.color.queries_message_bg white
+/set buffers.color.queries_message_fg red
+/set buffers.color.suffix_bufname blue
+/set buffers.color.whitelist_default_bg white
+/set buffers.color.whitelist_default_fg black
+/set buffers.color.whitelist_highlight_bg white
+/set buffers.color.whitelist_highlight_fg red
+/set buffers.color.whitelist_low_bg white
+/set buffers.color.whitelist_low_fg black
+/set buffers.color.whitelist_message_bg white
+/set buffers.color.whitelist_message_fg black
+/set buffers.color.whitelist_private_bg white
+/set buffers.color.whitelist_private_fg black
+/set buffers.look.number_char ". "
+
+/set plugins.var.python.screen_away.message "Detached from virtual reality"
+
+/set irc.server_default.nicks "tsuriga,tsuriza,tsurina"
+/set irc.server_default.username "tsuriga"
+/set irc.server_default.realname "Tsuri"
+
+/server add ircnet open.ircnet.net
+/set irc.server.ircnet.autojoin "#geekcollision,#javascript.fi,#idm"
+/set irc.server.ircnet.autoconnect on
+
+/alias add TZ /shell setenv TZ=$1
+/tz Europe/Helsinki
+
+/key bind meta-meta2-A /bar scroll nicklist * y-100%
+/key bind meta-meta2-B /bar scroll nicklist * y+100%
+
+/save
+/layout store
