@@ -9,7 +9,6 @@ setopt HIST_IGNORE_DUPS
 setopt INC_APPEND_HISTORY
 
 export EDITOR=nano
-export PGDATA=/usr/local/var/postgres
 
 # Common aliases
 
