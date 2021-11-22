@@ -9,11 +9,13 @@ setopt HIST_IGNORE_DUPS
 setopt INC_APPEND_HISTORY
 
 export EDITOR=nano
+export PGDATA=/usr/local/var/postgres
 
 # Common aliases
 
 alias ..="cd .."
 alias l="ls -ahlG"
+alias howbig="du -sh"
 
 # OS X aliases
 
@@ -23,16 +25,30 @@ alias ejectdmg="diskutil eject /dev/disk2"
 # Git aliases
 
 alias glog=showGitLog
-alias pull="git pull"
-alias push="git push"
 alias pushbranch=pushActiveBranch
-alias fetch="git fetch"
-alias checkout="git checkout"
-alias status="git status"
 alias branch=createGitBranch
 alias resetbranch=hardResetGitBranch
+alias git-add-symlink=gitAddSymlink
+alias deletebranch=gitDeleteBranch
+
+# how-to reminders
+alias howto-rename-recursive="echo \"find . -iname FILENAME -exec rename -v 's/SUBJECT/REPLACEMENT/;' '{}' \;\""
+alias howto-replace-recursive="echo \"find . -type f -print0 | xargs -0 sed -i '' 's/SUBJECT/REPLACEMENT/g'\""
+alias howto-find-app-using-a-port='echo lsof -n -i:PORT'
+alias howto-fix-sudoed-git-repo='echo sudo chown -R \`whoami\` ".git/**/*"'
+
+# my ip
+function getMyIp() {
+    dig TXT +short o-o.myaddr.l.google.com @ns1.google.com | awk -F'"' '{ print $2}'
+}
+alias myip=getMyIp
 
 # Git functions
+
+function gitDeleteBranch() {
+  branchName=$1
+  git push origin -d $branchName && git branch -D $branchName
+}
 
 function hardResetGitBranch() {
     git reset --hard && git clean -fd `git rev-parse --show-toplevel`
@@ -118,18 +134,18 @@ function createGitBranch() {
     git checkout "$1"
 }
 
-function pushActiveBranch {
+function pushActiveBranch() {
     activeBranch=`git rev-parse --abbrev-ref HEAD`
     git push --set-upstream origin $activeBranch
 }
 
 # Super neat PS1 that updates with time and branch status every second
 
-function we_are_in_git_work_tree {
+function we_are_in_git_work_tree() {
     git rev-parse --is-inside-work-tree &> /dev/null
 }
 
-function parse_git_branch {
+function parse_git_branch() {
     if we_are_in_git_work_tree; then
         BR=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD 2> /dev/null)
 
@@ -162,6 +178,23 @@ function parse_git_status {
     else
         echo ''
     fi
+}
+
+function gitAddSymlink {
+    src=$1
+    target=$2
+
+    if [ "$#" -lt "2" ]; then
+        echo "Usage: git-add-symlink <source> <target>"
+        echo "<source> and <target> are relative to pwd"
+        return 0
+    fi
+
+    prefix=`git rev-parse --show-prefix`
+    hash=`echo -n "$src" | git hash-object -w --stdin`
+
+    git update-index --add --cacheinfo 120000 $hash "$prefix$target"
+    git checkout -- "$target"
 }
 
 setopt PROMPT_SUBST
